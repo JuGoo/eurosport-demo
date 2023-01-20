@@ -8,4 +8,4 @@ abstract class DetailViewModel : ViewModel() {
 //    abstract fun start()
 }
 
-class DetailViewModelImpl : DetailViewModel()
+internal class DetailViewModelImpl : DetailViewModel()

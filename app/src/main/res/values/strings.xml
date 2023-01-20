@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Eurosport</string>
+    <string name="play">Play</string>
+    <string name="title">"FEATURED"</string>
+    <plurals name="views">
+        <item quantity="one">%d view</item>
+        <item quantity="other">%d views</item>
+    </plurals>
 </resources>

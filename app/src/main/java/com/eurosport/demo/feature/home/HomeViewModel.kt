@@ -5,12 +5,34 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.eurosport.domain.model.Article
-import com.eurosport.domain.usecase.FetchArticlesUseCase
+import com.eurosport.domain.usecase.FetchArticlesMixedUseCase
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 sealed class ArticleItem {
-    data class VideoItem(val id: String) : ArticleItem()
-    data class StoryItem(val id: String) : ArticleItem()
+    abstract val id: String
+    abstract val title: String
+    abstract val sport: String
+    abstract val imageUrl: String
+
+    data class VideoItem(
+        override val id: String,
+        override val title: String,
+        override val sport: String,
+        override val imageUrl: String,
+        val videoUrl: String,
+        val views: Int
+    ) : ArticleItem()
+
+    data class StoryItem(
+        override val id: String,
+        override val title: String,
+        override val sport: String,
+        override val imageUrl: String,
+        val author: String,
+        val duration: String
+    ) : ArticleItem()
 }
 
 sealed class HomeState {
@@ -25,8 +47,8 @@ abstract class HomeViewModel : ViewModel() {
     abstract fun start()
 }
 
-class HomeViewModelImpl(
-    private val fetchArticlesUseCase: FetchArticlesUseCase
+internal class HomeViewModelImpl(
+    private val fetchArticlesUseCase: FetchArticlesMixedUseCase
 ) : HomeViewModel() {
     override val state = MutableLiveData<HomeState>()
 
@@ -42,10 +64,30 @@ class HomeViewModelImpl(
 
 private fun List<Article>.mapToArticleItems() = map { article ->
     when (article) {
-        is Article.Story -> ArticleItem.StoryItem(article.id.toString())
-        is Article.Video -> ArticleItem.VideoItem(article.id.toString())
+        is Article.Story -> article.mapToStoryItem()
+        is Article.Video -> article.mapToVideoItem()
     }
 }
+
+private fun Article.Video.mapToVideoItem() = ArticleItem.VideoItem(
+    id = id.toString(),
+    title = title,
+    sport = sport.name.uppercase(),
+    imageUrl = imageUrl ?: "",
+    videoUrl = url,
+    views = views
+)
+
+private fun Article.Story.mapToStoryItem() = ArticleItem.StoryItem(
+    id = id.toString(),
+    title = title,
+    sport = sport.name.uppercase(),
+    imageUrl = imageUrl ?: "",
+    author = author ?: "",
+    duration = date?.let { createSimpleDateFormat().format(it).toString() } ?: ""
+)
+
+fun createSimpleDateFormat(): SimpleDateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH)
 
 fun ViewModel.launch(block: suspend () -> Unit) {
     viewModelScope.launch { block() }
