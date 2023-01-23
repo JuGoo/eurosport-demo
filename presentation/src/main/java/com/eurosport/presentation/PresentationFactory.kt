@@ -1,14 +1,14 @@
-package com.eurosport.demo.di
+package com.eurosport.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.eurosport.data.factories.RepositoryFactoryImpl
-import com.eurosport.demo.feature.detail.DetailViewModel
-import com.eurosport.demo.feature.detail.DetailViewModelImpl
-import com.eurosport.demo.feature.home.HomeViewModel
-import com.eurosport.demo.feature.home.HomeViewModelImpl
 import com.eurosport.domain.factories.RepositoryFactory
 import com.eurosport.domain.factories.UseCaseFactory
+import com.eurosport.presentation.viewmodel.DetailViewModel
+import com.eurosport.presentation.viewmodel.DetailViewModelImpl
+import com.eurosport.presentation.viewmodel.HomeViewModel
+import com.eurosport.presentation.viewmodel.HomeViewModelImpl
 
 class PresentationFactory : ViewModelProvider.Factory {
 

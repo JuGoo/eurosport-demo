@@ -15,6 +15,7 @@ import com.google.android.exoplayer2.ui.StyledPlayerView
 fun PlayerScreen(videoUrl: String, popBackStack: () -> Boolean) {
     val context = LocalContext.current
 
+    // TODO: find a better solution
     (context as MainActivity).requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
     val exoPlayer = ExoPlayer.Builder(LocalContext.current)
         .build()

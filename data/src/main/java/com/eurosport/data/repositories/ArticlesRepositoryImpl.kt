@@ -12,7 +12,7 @@ import kotlinx.coroutines.withContext
 import java.util.Date
 import kotlin.coroutines.CoroutineContext
 
-class ArticlesRepositoryImpl(
+internal class ArticlesRepositoryImpl(
     private val service: EurosportService,
     private val coroutineContext: CoroutineContext
 ) : ArticlesRepository {

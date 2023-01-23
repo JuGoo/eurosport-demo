@@ -37,6 +37,9 @@ import com.eurosport.demo.MainActivity
 import com.eurosport.demo.R
 import com.eurosport.demo.ui.component.ErrorScreen
 import com.eurosport.demo.ui.component.LoadingScreen
+import com.eurosport.presentation.model.ArticleItem
+import com.eurosport.presentation.viewmodel.HomeState
+import com.eurosport.presentation.viewmodel.HomeViewModel
 
 @Composable
 fun HomeScreen(
@@ -46,6 +49,7 @@ fun HomeScreen(
     popBackStack: () -> Unit
 ) {
     val context = LocalContext.current
+    // TODO: find a better solution
     (context as MainActivity).requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
     when (val state = viewModel.state.observeAsState(HomeState.Loading).value) {
         HomeState.Loading -> LoadingScreen()

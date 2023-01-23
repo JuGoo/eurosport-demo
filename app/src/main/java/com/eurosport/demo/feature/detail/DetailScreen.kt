@@ -10,9 +10,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.eurosport.demo.feature.home.ArticleItem
 import com.eurosport.demo.feature.home.SportText
 import com.eurosport.demo.feature.home.ThumbnailView
+import com.eurosport.presentation.model.ArticleItem
 
 @Composable
 fun DetailScreen(item: ArticleItem.StoryItem, popBackStack: () -> Boolean) = Column {

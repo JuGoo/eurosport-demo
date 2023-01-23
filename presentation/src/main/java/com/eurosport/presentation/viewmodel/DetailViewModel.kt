@@ -1,4 +1,4 @@
-package com.eurosport.demo.feature.detail
+package com.eurosport.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 

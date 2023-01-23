@@ -1,11 +1,11 @@
 package com.eurosport.data.model
 
-data class ArticlesResponse(
+internal data class ArticlesResponse(
     val videos: List<VideoResponse>? = emptyList(),
     val stories: List<StoryResponse>? = emptyList()
 )
 
-data class VideoResponse(
+internal data class VideoResponse(
     val id: Long?,
     val title: String?,
     val thumb: String?,
@@ -15,7 +15,7 @@ data class VideoResponse(
     val views: Int?
 )
 
-data class StoryResponse(
+internal data class StoryResponse(
     val id: Long?,
     val title: String?,
     val teaser: String?,
@@ -25,7 +25,7 @@ data class StoryResponse(
     val sport: SportResponse?
 )
 
-data class SportResponse(
+internal data class SportResponse(
     val id: Long?,
     val name: String?,
 )

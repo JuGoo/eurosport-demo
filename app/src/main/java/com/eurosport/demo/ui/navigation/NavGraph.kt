@@ -1,6 +1,5 @@
 package com.eurosport.demo.ui.navigation
 
-import android.content.Intent
 import android.net.Uri
 import android.os.Build.VERSION.SDK_INT
 import android.os.Bundle
@@ -13,12 +12,12 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.eurosport.demo.di.PresentationFactory
 import com.eurosport.demo.feature.detail.DetailScreen
-import com.eurosport.demo.feature.home.ArticleItem
 import com.eurosport.demo.feature.home.HomeScreen
-import com.eurosport.demo.feature.home.HomeViewModel
 import com.eurosport.demo.feature.player.PlayerScreen
+import com.eurosport.presentation.model.ArticleItem
+import com.eurosport.presentation.PresentationFactory
+import com.eurosport.presentation.viewmodel.HomeViewModel
 import com.google.gson.Gson
 
 @Composable
