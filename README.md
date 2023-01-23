@@ -19,8 +19,22 @@ Fetching data from the network<br>
 - [Material-Components](https://github.com/material-components/material-components-android)
 - [Mockk](https://mockk.io/ANDROID.html) : Mocking in testing
 
+
+## Project Structure
+
+This project is built using Clean Architecture and is structured in the following way:
+
+**app** - contains Activities/Fragments/Screen
+
+**presentation** - contains ViewModels for the presentation layer
+
+**domain** - contains entities and use cases for the presentation layer to access data from the **data** layer
+
+**data** -  contains data models and repositories for getting data
+
 ## Improvements
 - UI Test
+- Unit test on presentation module
 - Branch with ConstraintLayout
 - Support Light/Dark Mode
 - Fix bugs
