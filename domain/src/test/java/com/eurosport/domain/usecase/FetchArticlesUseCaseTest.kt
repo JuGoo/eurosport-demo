@@ -63,8 +63,8 @@ private fun createDummyVideos(ids: List<Int>) = ids.map {
         imageUrl = null,
         date = null,
         sport = Sport(id = 1, name = "Football"),
-        url = "videoUrl",
-        views = 0
+        views = 0,
+        url = ""
     )
 }
 

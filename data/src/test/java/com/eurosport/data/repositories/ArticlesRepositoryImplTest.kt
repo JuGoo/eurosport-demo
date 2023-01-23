@@ -1,17 +1,19 @@
 package com.eurosport.data.repositories
 
 import com.eurosport.data.model.ArticlesResponse
+import com.eurosport.data.model.SportResponse
 import com.eurosport.data.model.StoryResponse
 import com.eurosport.data.model.VideoResponse
 import com.eurosport.data.services.EurosportService
 import com.eurosport.domain.model.Article
+import com.eurosport.domain.model.Sport
+import com.google.common.truth.Truth.assertThat
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.MockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
-import com.google.common.truth.Truth.assertThat
 import org.junit.Before
 import org.junit.Test
 
@@ -58,15 +60,47 @@ private fun createArticlesResponse(vararg ids: Int): ArticlesResponse = Articles
 )
 
 private fun createVideos(ids: IntArray): List<VideoResponse> = ids.map {
-    VideoResponse(id = it.toLong(), title = it.toString(), thumb = it.toString())
+    VideoResponse(
+        id = it.toLong(),
+        title = it.toString(),
+        thumb = it.toString(),
+        url = it.toString(),
+        date = null,
+        sport = SportResponse(0, "foot"),
+        views = null
+    )
 }
 
 private fun createStories(ids: IntArray): List<StoryResponse> = ids.map {
-    StoryResponse(id = it.toLong(), title = it.toString(), image = it.toString())
+    StoryResponse(
+        id = it.toLong(),
+        title = it.toString(),
+        image = it.toString(),
+        teaser = null,
+        date = null,
+        author = null,
+        sport = SportResponse(0, "foot")
+    )
 }
 
 private fun createDummyArticles(vararg ids: Int): List<Article> = ids.map {
-    Article.Video(id = it.toLong(), title = it.toString())
+    Article.Video(
+        id = it.toLong(),
+        title = it.toString(),
+        imageUrl = it.toString(),
+        date = null,
+        sport = Sport(id = 0, name = "foot"),
+        views = 0,
+        url = it.toString()
+    )
 } + ids.map {
-    Article.Story(id = it.toLong(), title = it.toString())
+    Article.Story(
+        id = it.toLong(),
+        title = it.toString(),
+        imageUrl = it.toString(),
+        date = null,
+        sport = Sport(id = 0, name = "foot"),
+        teaser = null,
+        author = null
+    )
 }

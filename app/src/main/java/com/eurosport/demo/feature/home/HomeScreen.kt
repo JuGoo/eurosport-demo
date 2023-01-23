@@ -1,6 +1,6 @@
 package com.eurosport.demo.feature.home
 
-import android.content.Context
+import android.content.pm.ActivityInfo
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -18,7 +18,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,27 +31,35 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.AndroidView
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
+import com.eurosport.demo.MainActivity
 import com.eurosport.demo.R
 import com.eurosport.demo.ui.component.ErrorScreen
 import com.eurosport.demo.ui.component.LoadingScreen
-import com.google.android.exoplayer2.ExoPlayer
-import com.google.android.exoplayer2.MediaItem
-import com.google.android.exoplayer2.ui.StyledPlayerView
 
 @Composable
-fun HomeContent(viewModel: HomeViewModel) {
+fun HomeScreen(
+    viewModel: HomeViewModel,
+    navigateToDetail: (ArticleItem.StoryItem) -> Unit,
+    navigateToPlayer: (String) -> Unit,
+    popBackStack: () -> Unit
+) {
+    val context = LocalContext.current
+    (context as MainActivity).requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
     when (val state = viewModel.state.observeAsState(HomeState.Loading).value) {
         HomeState.Loading -> LoadingScreen()
-        is HomeState.Data -> ArticleListScreen(articles = state.items)
+        is HomeState.Data -> ArticleListScreen(
+            articles = state.items, navigateToDetail = navigateToDetail, navigateToPlayer = navigateToPlayer
+        )
         HomeState.Error -> ErrorScreen()
     }
 }
 
 @Composable
-fun ArticleListScreen(articles: List<ArticleItem>) {
+fun ArticleListScreen(
+    articles: List<ArticleItem>, navigateToDetail: (ArticleItem.StoryItem) -> Unit, navigateToPlayer: (String) -> Unit
+) {
     LazyColumn(
         modifier = Modifier
             .fillMaxWidth()
@@ -60,20 +67,25 @@ fun ArticleListScreen(articles: List<ArticleItem>) {
         contentPadding = PaddingValues(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        items(articles) {
-            ArticleItemView(it)
+        items(items = articles, key = { article ->
+            // Return a stable + unique key for the item
+            article.id
+        }) {
+            ArticleItemView(it, navigateToDetail, navigateToPlayer)
         }
     }
 }
 
 @Composable
-fun ArticleItemView(item: ArticleItem) = when (item) {
-    is ArticleItem.StoryItem -> StoryItemView(item)
-    is ArticleItem.VideoItem -> VideoItemView(item)
+fun ArticleItemView(
+    item: ArticleItem, navigateToDetail: (ArticleItem.StoryItem) -> Unit, navigateToPlayer: (String) -> Unit
+) = when (item) {
+    is ArticleItem.StoryItem -> StoryItemView(item, navigateToDetail)
+    is ArticleItem.VideoItem -> VideoItemView(item, navigateToPlayer)
 }
 
 @Composable
-fun StoryItemView(item: ArticleItem.StoryItem) = Card(
+fun StoryItemView(item: ArticleItem.StoryItem, navigateToDetail: (ArticleItem.StoryItem) -> Unit) = Card(
     modifier = Modifier
         .fillMaxWidth()
         .background(Color.White),
@@ -82,7 +94,7 @@ fun StoryItemView(item: ArticleItem.StoryItem) = Card(
     Column(modifier = Modifier
         .background(MaterialTheme.colorScheme.onPrimary)
         .clickable {
-
+            navigateToDetail(item)
         }) {
         ThumbnailView(imageUrl = item.imageUrl, item.title)
         Text(
@@ -92,21 +104,20 @@ fun StoryItemView(item: ArticleItem.StoryItem) = Card(
             style = MaterialTheme.typography.titleLarge,
         )
         Text(
-            text = "${item.author} - ${item.duration}",
-            style = MaterialTheme.typography.bodySmall
+            text = "${item.author} - ${item.duration}", style = MaterialTheme.typography.bodySmall
         )
     }
 }
 
 @Composable
-fun VideoItemView(item: ArticleItem.VideoItem) = Card(
+fun VideoItemView(item: ArticleItem.VideoItem, navigateToPlayer: (String) -> Unit) = Card(
     modifier = Modifier.fillMaxWidth(),
     shape = RoundedCornerShape(8.dp),
 ) {
     Column(modifier = Modifier
         .background(MaterialTheme.colorScheme.onPrimary)
         .clickable {
-            showPlayer(context = LocalContext.current, videoUrl = item.videoUrl)
+            navigateToPlayer(item.videoUrl)
         }) {
         VideoThumbnailView(item)
         Text(
@@ -116,14 +127,9 @@ fun VideoItemView(item: ArticleItem.VideoItem) = Card(
             style = MaterialTheme.typography.titleLarge,
         )
         Text(
-            text = pluralStringResource(R.plurals.views, item.views, item.views),
-            style = MaterialTheme.typography.bodySmall
+            text = pluralStringResource(R.plurals.views, item.views, item.views), style = MaterialTheme.typography.bodySmall
         )
     }
-}
-
-fun showPlayer(context: Context, videoUrl: String) {
-    VideoPlayer(videoUrl = videoUrl)
 }
 
 @Composable
@@ -143,7 +149,7 @@ private fun VideoThumbnailView(item: ArticleItem.VideoItem) = Box {
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-private fun ThumbnailView(imageUrl: String, contentDescription: String) = GlideImage(
+fun ThumbnailView(imageUrl: String, contentDescription: String) = GlideImage(
     model = imageUrl,
     contentScale = ContentScale.Crop,
     modifier = Modifier
@@ -159,8 +165,7 @@ fun ThumbnailViewPreview() = ThumbnailView("url", "image")
 
 @Composable
 fun SportText(
-    sport: String,
-    modifier: Modifier = Modifier
+    sport: String, modifier: Modifier = Modifier
 ) = Box(
     modifier = modifier
         .clip(shape = RoundedCornerShape(8.dp))
@@ -173,29 +178,4 @@ fun SportText(
         style = MaterialTheme.typography.labelSmall,
         color = Color.White
     )
-}
-
-@Composable
-fun VideoPlayer(videoUrl: String) {
-    val context = LocalContext.current
-
-    val exoPlayer = ExoPlayer.Builder(LocalContext.current)
-        .build()
-        .also { exoPlayer ->
-            val mediaItem = MediaItem.Builder()
-                .setUri(videoUrl)
-                .build()
-            exoPlayer.setMediaItem(mediaItem)
-            exoPlayer.prepare()
-        }
-
-    DisposableEffect(
-        AndroidView(factory = {
-            StyledPlayerView(context).apply {
-                player = exoPlayer
-            }
-        })
-    ) {
-        onDispose { exoPlayer.release() }
-    }
 }
