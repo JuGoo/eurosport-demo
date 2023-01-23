@@ -3,6 +3,10 @@ This is a small demo application based on modern Android application tech-stacks
 
 Fetching data from the network<br>
 
+https://user-images.githubusercontent.com/16305464/214053033-8ad82e0c-513b-406e-8306-5fa30391abdb.mp4
+
+
+
 ## Tech stack & Open-source libraries
 - Minimum SDK level 21
 - [Kotlin](https://kotlinlang.org/) based, [Coroutines](https://github.com/Kotlin/kotlinx.coroutines) for asynchronous.
